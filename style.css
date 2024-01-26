@@ -180,8 +180,6 @@ body.dark-mode .choice-button {
   color: #ffffff;
 }
 
-/* Add more dark-mode specific styles as needed */
-
 /* Shake animation */
 @keyframes shake {
   0%,
@@ -200,5 +198,44 @@ body.dark-mode .choice-button {
   60%,
   80% {
     transform: translateX(10px);
+  }
+}
+
+.quiz-container {
+  width: 60vw;
+}
+
+.choice-button {
+  padding: 30px 50px;
+}
+
+/* Media query for tablets */
+@media screen and (max-width: 768px) {
+  .quiz-container {
+    width: 80vw;
+  }
+
+  .choice-button {
+    padding: 20px 30px;
+  }
+}
+
+/* Media query for mobile phones */
+@media screen and (max-width: 480px) {
+  .quiz-container {
+    width: 95vw;
+  }
+
+  .choice-button {
+    padding: 15px 20px;
+  }
+
+  .character-display {
+    font-size: 3em;
+  }
+
+  .dark-mode-switch-container {
+    top: 10px;
+    right: 10px;
   }
 }
