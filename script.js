@@ -39,39 +39,54 @@ document.addEventListener('DOMContentLoaded', () => {
     { char: 'ゆ', choices: ['YA', 'YU', 'YO'], correct: 'YU' },
     { char: 'よ', choices: ['YA', 'YU', 'YO'], correct: 'YO' },
     { char: 'ら', choices: ['RA', 'WA', 'YA'], correct: 'RA' },
+    { char: 'り', choices: ['RI', 'YI', 'WI'], correct: 'RI' },
+    { char: 'る', choices: ['RU', 'YU', 'WU'], correct: 'RU' },
+    { char: 'れ', choices: ['RE', 'YE', 'WE'], correct: 'RE' },
+    { char: 'ろ', choices: ['RO', 'YO', 'WO'], correct: 'RO' },
+    { char: 'わ', choices: ['WA', 'RA', 'YA'], correct: 'WA' },
+    { char: 'を', choices: ['WO', 'RO', 'YO'], correct: 'WO' },
+    { char: 'ん', choices: ['N', 'M', 'NG'], correct: 'N' },
   ];
 
-  // Current character index and timer initialization
   let currentCharacterIndex = 0;
   let timer;
   const maxTime = 5000; // Time allowed to answer in milliseconds
   const updateTime = 100; // Timer update interval in milliseconds
 
-  // DOM element references
   const progressBar = document.getElementById('progress-bar');
   const characterDisplay = document.getElementById('character-display');
   const choicesDiv = document.getElementById('choices');
   const choiceButtons = document.querySelectorAll('.choice-button');
 
-  // Function to set the progress bar width
   function setProgressBarWidth(width) {
     progressBar.style.width = width + '%';
   }
 
-  // Function to display a new character and set up choices
-  function displayCharacter() {
-    const character = characters[currentCharacterIndex];
-    characterDisplay.textContent = character.char;
-    character.choices.forEach((choice, index) => {
-      choiceButtons[index].textContent = choice;
-      choiceButtons[index].dataset.choice = choice;
-      choiceButtons[index].classList.remove('correct', 'wrong'); // Reset classes
-    });
-    setProgressBarWidth(100); // Reset the progress bar width
-    startTimer(); // Start the countdown for the new character
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+    }
   }
 
-  // Function to proceed to the next character or loop back to start
+  function displayCharacter() {
+    choiceButtons.forEach(button =>
+      button.classList.remove('correct', 'wrong')
+    );
+
+    const character = characters[currentCharacterIndex];
+    characterDisplay.textContent = character.char;
+
+    let shuffledChoices = [...character.choices];
+    shuffleArray(shuffledChoices);
+
+    shuffledChoices.forEach((choice, index) => {
+      choiceButtons[index].textContent = choice;
+    });
+
+    setProgressBarWidth(100); // Reset progress bar for new character
+    startTimer(); // Start the timer for the new character
+  }
   function nextCharacter() {
     stopTimer(); // Stop the current timer
     if (currentCharacterIndex < characters.length - 1) {
@@ -82,7 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
     displayCharacter(); // Display the next character
   }
 
-  // Function to start the timer
   function startTimer() {
     let timeLeft = maxTime;
     timer = setInterval(() => {
@@ -95,35 +109,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }, updateTime);
   }
 
-  // Function to stop the timer
   function stopTimer() {
     clearInterval(timer);
   }
 
-  // Event listener for choice button clicks
   choicesDiv.addEventListener('click', e => {
     if (e.target && e.target.nodeName === 'BUTTON') {
-      const selectedChoice = e.target.dataset.choice;
+      const selectedChoice = e.target.textContent;
       const correctChoice = characters[currentCharacterIndex].correct;
       choiceButtons.forEach(button =>
         button.classList.remove('correct', 'wrong')
-      ); // Remove classes from all buttons
+      );
 
       if (selectedChoice === correctChoice) {
-        e.target.classList.add('correct'); // Add 'correct' class
-        setTimeout(nextCharacter, 100); // Delay before moving to the next character
+        e.target.classList.add('correct');
+        setTimeout(nextCharacter, 100);
       } else {
-        e.target.classList.add('wrong'); // Add 'wrong' class
-        setTimeout(() => e.target.classList.remove('wrong'), 1000); // Remove 'wrong' class after a delay
+        e.target.classList.add('wrong');
+        setTimeout(() => e.target.classList.remove('wrong'), 1000);
       }
     }
   });
+
   document
     .getElementById('dark-mode-switch')
     .addEventListener('change', function () {
       document.body.classList.toggle('dark-mode');
     });
 
-  // Display the first character when the DOM is ready
   displayCharacter();
 });
